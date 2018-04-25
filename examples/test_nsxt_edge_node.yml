@@ -1,0 +1,34 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: False
+  tasks:
+    - name: NSX-T Fabric Node
+      nsxt_edge_node:
+        display_name: 'testEdge1'
+        description: 'My Test Edge'
+        form_factor: 'SMALL'
+        vsphere_cluster: 'Management'
+        data_network_ids:
+          - 'network-26'
+          - 'network-26'
+          - 'network-26'
+        management_network_id: 'network-25'
+        management_port_subnet: '10.29.12.214'
+        management_port_prefix: '27'
+        default_gateway_addresses:
+          - 10.29.12.193
+        hostname: 'testEdge1'
+        storage_id: 'datastore-18'
+        vc_id: 'b20c1f9d-5ac9-4344-8784-425a1a2835fe'
+        cli_password: 'VMware1!'
+        root_password: 'VMware1!'
+        state: present
+        nsx_manager: "10.29.12.203"
+        nsx_username: "admin"
+        nsx_passwd: 'VMware1!'
+      register: fnode
+  tags: fnode
+
+
+
