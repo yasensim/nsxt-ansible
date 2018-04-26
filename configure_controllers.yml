@@ -14,17 +14,11 @@
       register: command_result
       failed_when: "command_result.rc > 0 and command_result.rc != 255"
       with_items: "{{ groups['nsxcontrollers'] }}"
-    - name: Remove previous SSH keys from known_hosts - Edges
-      command: 'ssh-keygen -R "{{ hostvars[item].ansible_ssh_host }}"'
-      register: command_result
-      failed_when: "command_result.rc > 0 and command_result.rc != 255"
-      with_items: "{{ groups['nsxedges'] }}"
   tags: clean_old_keys
 - name: Wait for all VMs to be reachable
   hosts:
     - nsxmanagers
     - nsxcontrollers
-    - nsxedges
   gather_facts: False
   tasks:
     - name: Wait for all VMs
@@ -41,9 +35,6 @@
     - name: add host to known_hosts - Controllers
       shell: 'mkdir -p ~/.ssh; ssh-keyscan -H "{{ hostvars[item].ansible_ssh_host }}" >> ~/.ssh/known_hosts'
       with_items: "{{ groups['nsxcontrollers'] }}"
-    - name: add host to known_hosts - Edges
-      shell: 'mkdir -p ~/.ssh; ssh-keyscan -H "{{ hostvars[item].ansible_ssh_host }}" >> ~/.ssh/known_hosts'
-      with_items: "{{ groups['nsxedges'] }}"
   tags: populate_known_hosts
 - name: Retrieve NSX Man thumbprint
   serial: 1
@@ -57,8 +48,8 @@
       register: thumbprint
   tags: nsxman_thumb
 
-- name: Join controllers and gateways to NSX-Manager
-  hosts: nsxcontrollers:nsxedges
+- name: Join controllers to NSX-Manager
+  hosts: nsxcontrollers
   gather_facts: False
   tasks:
     - name: Join controllers and gateways to Manager
