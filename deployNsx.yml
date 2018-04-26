@@ -272,7 +272,7 @@
       register: job_result
       until: job_result.finished
       with_items: "{{ edgefnode.results }}"
-      retries: 40
+      retries: 80
 
     - name: NSX-T Edge Transport Node
       nsxt_transport_node:

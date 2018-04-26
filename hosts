@@ -15,12 +15,11 @@ edge2 ansible_ssh_host=10.29.12.208 ansible_ssh_user=root ansible_ssh_pass=VMwar
 
 [localhost:vars]
 ovfToolPath='/usr/bin'
-nsxOvaPath='/root/ISOs'
+nsxOvaPath='/root/ISOs/EQ'
 sshEnabled='True'
 allowSSHRootAccess='True'
-managerOva='nsx-unified-appliance-2.1.0.0.0.7328369.ova'
-controllerOva='nsx-controller-2.1.0.0.0.7328367.ova'
-edgeOva='nsx-edge-2.1.0.0.0.7328372.ova'
+managerOva='nsx-unified-appliance-2.2.0.0.0.8366519.ova'
+controllerOva='nsx-controller-2.2.0.0.0.8366518.ova'
 
 deployVcIPAddress='10.29.12.202'
 deployVcUser='administrator@yasen.local'
