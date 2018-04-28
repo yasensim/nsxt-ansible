@@ -4,11 +4,6 @@ localhost ansible_connection=local
 [nsxmanagers]
 nsx-manager ansible_ssh_host=10.29.12.203 ansible_ssh_user=root ansible_ssh_pass=VMware1! dc=MyDC1 cluster=Management datastore=Datastore-10 portgroup=Infrastructure gw=10.29.12.193 mask=255.255.255.224 hostname=nsxmanager
 
-[nsxcontrollers]
-nsx-controller01 ansible_ssh_host=10.29.12.204 ansible_ssh_user=root ansible_ssh_pass=VMware1! dc=MyDC1 cluster=Management datastore=Datastore-10 portgroup=Infrastructure gw=10.29.12.193 mask=255.255.255.224 hostname=nsxctrl1
-nsx-controller02 ansible_ssh_host=10.29.12.205 ansible_ssh_user=root ansible_ssh_pass=VMware1! dc=MyDC1 cluster=Management datastore=Datastore-10 portgroup=Infrastructure gw=10.29.12.193 mask=255.255.255.224 hostname=nsxctrl2
-nsx-controller03 ansible_ssh_host=10.29.12.206 ansible_ssh_user=root ansible_ssh_pass=VMware1! dc=MyDC1 cluster=Management datastore=Datastore-10 portgroup=Infrastructure gw=10.29.12.193 mask=255.255.255.224 hostname=nsxctrl3
-
 [nsxedges]
 edge1 ansible_ssh_host=10.29.12.207 ansible_ssh_user=root ansible_ssh_pass=VMware1! dc=MyDC1 cluster=Management datastore=datastore-17 portgroup=network-25 gw=10.29.12.193 mask=27 hostname=edge1 portgroupExt=network-26 portgroupTransport=network-26 form_factor=SMALL
 edge2 ansible_ssh_host=10.29.12.208 ansible_ssh_user=root ansible_ssh_pass=VMware1! dc=MyDC1 cluster=Management datastore=datastore-17 portgroup=network-25 gw=10.29.12.193 mask=27 hostname=edge2 portgroupExt=network-26 portgroupTransport=network-26 form_factor=SMALL

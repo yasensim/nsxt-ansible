@@ -1,0 +1,56 @@
+nsxmanagers:
+  nsx-manager: 
+    ip: 10.29.12.203 
+    pass: VMware1! 
+    dc: MyDC1 
+    cluster: Management 
+    datastore: Datastore-10 
+    portgroup: Infrastructure 
+    gw: 10.29.12.193 
+    mask: 255.255.255.224 
+
+controllers:
+  - hostname: 'nsxcontroller1'
+    form_factor: 'MEDIUM'
+    vsphere_cluster: 'Management'
+    host_id: 'host-12'
+    management_network_id: 'network-25'
+    management_port_subnet: '10.29.12.214'
+    management_port_prefix: '27'
+    default_gateway_addresses:
+      - 10.29.12.193
+    storage_id: 'datastore-18'
+    cli_password: 'VMware1!'
+    root_password: 'VMware1!'
+    allow_ssh_root_login: True
+    enable_ssh: True
+  - hostname: 'nsxcontroller2'
+    form_factor: 'MEDIUM'
+    vsphere_cluster: 'Management'
+    host_id: 'host-12'
+    management_network_id: 'network-25'
+    management_port_subnet: '10.29.12.215'
+    management_port_prefix: '27'
+    default_gateway_addresses:
+      - 10.29.12.193
+    storage_id: 'datastore-18'
+    cli_password: 'VMware1!'
+    root_password: 'VMware1!'
+    allow_ssh_root_login: True
+    enable_ssh: True
+  - hostname: 'nsxcontroller3'
+    form_factor: 'MEDIUM'
+    vsphere_cluster: 'Management'
+    host_id: 'host-12'
+    management_network_id: 'network-25'
+    management_port_subnet: '10.29.12.216'
+    management_port_prefix: '27'
+    default_gateway_addresses:
+      - 10.29.12.193
+    storage_id: 'datastore-18'
+    cli_password: 'VMware1!'
+    root_password: 'VMware1!'
+    allow_ssh_root_login: True
+    enable_ssh: True
+
+

@@ -91,6 +91,7 @@ def main():
     module = AnsibleModule(
         argument_spec=dict(
             shared_secret=dict(required=True, type='str', no_log=True),
+            vc_id=dict(required=False, type='str', default=None),
             controllers=dict(required=True, type='list'),
             state=dict(required=False, type='str', default="present", choices=['present', 'absent']),
             nsx_manager=dict(required=True, type='str'),
@@ -118,6 +119,8 @@ def main():
     if module.params['state'] == "present":
         isExisting = False
         for controller in module.params['controllers']:
+            if module.params['vc_id']:
+                controller['vc_id'] = module.params['vc_id']
             isExistingTmp = False
             for deploymentRequest in dep_list.results:
                 dconfig = deploymentRequest.deployment_config.convert_to(VsphereClusterNodeVMDeploymentConfig)
@@ -137,7 +140,7 @@ def main():
             deployment_requests=ctrl_list
         )
         check = 0
-        elif not isExisting:
+        if not isExisting:
             check = len(module.params['controllers'])-1
 
         try:

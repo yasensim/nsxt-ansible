@@ -2,6 +2,8 @@
 - name: Deploy and Configure NSX-T
   hosts: localhost
   gather_facts: False
+  vars_files:
+    - answerfile.yml
   tasks:
     - name: deploy NSX Managers OVA
       deploy_ova:
@@ -50,7 +52,8 @@
     - name: NSX-T Controller Cluster
       nsxt_controller_cluster:
         shared_secret: 'VMware1!'
-        controllers: groups['nsxcontrollers']
+        vc_id: "{{ cmp_manager.id }}"
+        controllers: "{{ controllers }}"
         state: present
         nsx_manager: "{{ hostvars['nsx-manager'].ansible_ssh_host }}"
         nsx_username: 'admin'
