@@ -1,0 +1,7 @@
+---
+- name: Deploy and Configure NSX-T
+  hosts: localhost
+  gather_facts: False
+  tasks:
+    - debug: var=hostvars[item]['dc']
+      with_items: "{{ groups['nsxcontrollers'] }}"

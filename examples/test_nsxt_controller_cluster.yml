@@ -1,0 +1,63 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: False
+  tasks:
+    - name: NSX-T Controller Cluster
+      nsxt_controller_cluster:
+        shared_secret: 'VMware1!'
+        controllers:
+          - hostname: 'Controller41'
+            form_factor: 'MEDIUM'
+            vsphere_cluster: 'Management'
+            host_id: 'host-12'
+            management_network_id: 'network-25'
+            management_port_subnet: '10.29.12.214'
+            management_port_prefix: '27'
+            default_gateway_addresses:
+              - 10.29.12.193
+            storage_id: 'datastore-18'
+            vc_id: 'c070e2a5-cfe4-45c6-ba7d-63f8666e5a01'
+            cli_password: 'VMware1!'
+            root_password: 'VMware1!'
+            allow_ssh_root_login: True
+            enable_ssh: True
+          - hostname: 'Controller42'
+            form_factor: 'MEDIUM'
+            vsphere_cluster: 'Management'
+            host_id: 'host-12'
+            management_network_id: 'network-25'
+            management_port_subnet: '10.29.12.215'
+            management_port_prefix: '27'
+            default_gateway_addresses:
+              - 10.29.12.193
+            storage_id: 'datastore-18'
+            vc_id: 'c070e2a5-cfe4-45c6-ba7d-63f8666e5a01'
+            cli_password: 'VMware1!'
+            root_password: 'VMware1!'
+            allow_ssh_root_login: True
+            enable_ssh: True
+          - hostname: 'Controller43'
+            form_factor: 'MEDIUM'
+            vsphere_cluster: 'Management'
+            host_id: 'host-12'
+            management_network_id: 'network-25'
+            management_port_subnet: '10.29.12.216'
+            management_port_prefix: '27'
+            default_gateway_addresses:
+              - 10.29.12.193
+            storage_id: 'datastore-18'
+            vc_id: 'c070e2a5-cfe4-45c6-ba7d-63f8666e5a01'
+            cli_password: 'VMware1!'
+            root_password: 'VMware1!'
+            allow_ssh_root_login: True
+            enable_ssh: True
+        state: present
+        nsx_manager: "10.29.12.203"
+        nsx_username: "admin"
+        nsx_passwd: 'VMware1!'
+      register: ctrl
+  tags: ctrl
+
+
+

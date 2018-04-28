@@ -60,7 +60,7 @@ def getComputeByName(module, stub_config):
     for cc in cc_list.results:
         if cc.display_name == module.params['vsphere_cluster']:
             return cc
-    module.fail_json(msg="No Cluster with name %s found!" % (module.params['vsphere_compute']))
+    module.fail_json(msg="No Cluster with name %s found!" % (module.params['vsphere_cluster']))
 
 def createDeploymentConfig(module, stub_config):
     compute = getComputeByName(module, stub_config)

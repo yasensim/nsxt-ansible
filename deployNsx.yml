@@ -1,9 +1,9 @@
 ---
-- name: Deploy NSX-T OVAs
+- name: Deploy and Configure NSX-T
   hosts: localhost
   gather_facts: False
   tasks:
-    - name: deploy NSX Managers
+    - name: deploy NSX Managers OVA
       deploy_ova:
         ovftool_path: "{{ hostvars['localhost'].ovfToolPath }}"
         datacenter: "{{ hostvars[item]['dc'] }}"
@@ -28,64 +28,36 @@
         vcenter_user: "{{ hostvars['localhost'].deployVcUser }}"
         vcenter_passwd: "{{ hostvars['localhost'].deployVcPassword }}"
       with_items: "{{ groups['nsxmanagers'] }}"
-      async: 7200
-      poll: 0
       register: deploy_nsx_man
-    - name: Wait 2 minutes before start deploying controllers
-      pause: minutes=2
-    - name: deploy NSX Controllers
-      deploy_ova:
-        ovftool_path: "{{ hostvars['localhost'].ovfToolPath }}"
-        datacenter: "{{ hostvars[item]['dc'] }}"
-        datastore: "{{ hostvars[item]['datastore'] }}"
-        portgroup: "{{ hostvars[item]['portgroup'] }}"
-        cluster: "{{ hostvars[item]['cluster'] }}"
-        vmname: "{{ item }}"
-        hostname: "{{ hostvars[item]['hostname'] }}"
-        dns_server: "{{ hostvars['localhost'].dns_server }}"
-        dns_domain: "{{ hostvars['localhost'].dns_domain }}"
-        ntp_server: "{{ hostvars['localhost'].ntp_server }}"
-        gateway: "{{ hostvars[item]['gw'] }}"
-        ip_address: "{{ hostvars[item].ansible_ssh_host }}"
-        netmask: "{{ hostvars[item]['mask'] }}"
-        admin_password: "{{ hostvars[item].ansible_ssh_pass }}"
-        cli_password: "{{ hostvars[item].ansible_ssh_pass }}"
-        ssh_enabled: "{{ hostvars['localhost'].sshEnabled }}"
-        allow_ssh_root_login: "{{ hostvars['localhost'].allowSSHRootAccess }}"
-        path_to_ova: "{{ hostvars['localhost'].nsxOvaPath }}"
-        ova_file: "{{ hostvars['localhost'].controllerOva }}"
-        vcenter: "{{ hostvars['localhost'].deployVcIPAddress }}"
-        vcenter_user: "{{ hostvars['localhost'].deployVcUser }}"
-        vcenter_passwd: "{{ hostvars['localhost'].deployVcPassword }}"
-      with_items: "{{ groups['nsxcontrollers'] }}"
-      async: 7200
-      poll: 0
-      register: deploy_nsx_ctrl
+    - name: Wait 5 minutes before start verifying the deployment
+      pause: minutes=5
 
-    - name: Wait 10 minutes before start verifying the deployment
-      pause: minutes=10
-    - name: Check if NSX Managers deployment has finished
-      async_status:
-        jid: "{{ item.ansible_job_id }}"
-      register: job_result
-      until: job_result.finished
-      with_items: "{{ deploy_nsx_man.results }}"
-      retries: 10
-    - name: Check if NSX Controllers deployment has finished
-      async_status:
-        jid: "{{ item.ansible_job_id }}"
-      register: job_result
-      until: job_result.finished
-      with_items: "{{ deploy_nsx_ctrl.results }}"
-      retries: 10
+    - name: NSX-T Compute Manager
+      nsxt_compute_manager:
+        display_name: "{{ hostvars['localhost'].compute_manager }}"
+        server: "{{ hostvars['localhost'].deployVcIPAddress }}"
+        username: "{{ hostvars['localhost'].deployVcUser }}"
+        passwd: "{{ hostvars['localhost'].deployVcPassword }}"
+        origin_type: "vCenter"
+        state: present
+        nsx_manager: "{{ hostvars['nsx-manager'].ansible_ssh_host }}"
+        nsx_username: 'admin'
+        nsx_passwd: "{{ hostvars['nsx-manager'].ansible_ssh_pass }}"
+      when: hostvars['localhost'].compute_manager is defined
+      register: cmp_manager
 
 
-- include: configure_controllers.yml
+    - name: NSX-T Controller Cluster
+      nsxt_controller_cluster:
+        shared_secret: 'VMware1!'
+        controllers: groups['nsxcontrollers']
+        state: present
+        nsx_manager: "{{ hostvars['nsx-manager'].ansible_ssh_host }}"
+        nsx_username: 'admin'
+        nsx_passwd: "{{ hostvars['nsx-manager'].ansible_ssh_pass }}"
+      register: ctrl_cluster
 
-- name: Configure NSX-T
-  hosts: localhost
-  gather_facts: False
-  tasks:
+
     - name: NSX-T Overlay Transport Zone
       nsxt_transport_zone:
         display_name: "{{ hostvars['localhost'].overlay_tz_name }}"
@@ -199,19 +171,6 @@
       when: hostvars['localhost'].esxi_uplink_profile_name is defined
       register: edge_uplink_prof
 
-    - name: NSX-T Compute Manager
-      nsxt_compute_manager:
-        display_name: "{{ hostvars['localhost'].compute_manager }}"
-        server: "{{ hostvars['localhost'].deployVcIPAddress }}"
-        username: "{{ hostvars['localhost'].deployVcUser }}"
-        passwd: "{{ hostvars['localhost'].deployVcPassword }}"
-        origin_type: "vCenter"
-        state: present
-        nsx_manager: "{{ hostvars['nsx-manager'].ansible_ssh_host }}"
-        nsx_username: 'admin'
-        nsx_passwd: "{{ hostvars['nsx-manager'].ansible_ssh_pass }}"
-      when: hostvars['localhost'].compute_manager is defined
-      register: cmp_manager
 
     - name: NSX-T Compute Manager Cluster
       nsxt_cm_cluster:
