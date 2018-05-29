@@ -82,7 +82,7 @@ nsxedges:
     portgroup: network-25
     gw: 10.29.12.193
     mask: 27
-    hostname: edge1
+    hostname: edge2
     portgroupExt: network-26
     portgroupTransport: network-26
     form_factor: SMALL
