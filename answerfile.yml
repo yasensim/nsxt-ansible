@@ -93,16 +93,17 @@ nsxedges:
 
 
 ovfToolPath: '/usr/bin'
-nsxOvaPath: '/root/ISOs/EQ'
+nsxOvaPath: '/root/ISOs'
 sshEnabled: 'True'
 allowSSHRootAccess: 'True'
 managerOva: 'nsx-unified-appliance-2.2.0.0.0.8366519.ova'
-controllerOva: 'nsx-controller-2.2.0.0.0.8366518.ova'
 
 deployVcIPAddress: '10.29.12.202'
 deployVcUser: 'administrator@yasen.local'
 deployVcPassword: 'VMware1!'
+
 compute_manager: 'vCenter1'
+
 cm_clusters: 
   Compute:
     auto_install_nsx: True
@@ -113,7 +114,7 @@ cm_clusters:
       uplink-1: vmnic3
       uplink-2: vmnic4
 
-dns_server:v"10.29.12.201"
+dns_server: "10.29.12.201"
 dns_domain: "yasen.local"
 ntp_server: "10.29.12.201"
 

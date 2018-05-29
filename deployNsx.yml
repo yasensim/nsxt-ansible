@@ -12,7 +12,7 @@
         datastore: "{{ item.value.datastore }}"
         portgroup: "{{ item.value.portgroup }}"
         cluster: "{{ item.value.cluster }}"
-        vmname: "{{ item }}"
+        vmname: "{{ item.key }}"
         hostname: "{{ item.value.hostname }}"
         dns_server: "{{ dns_server }}"
         dns_domain: "{{ dns_domain }}"
@@ -33,7 +33,7 @@
       register: deploy_nsx_man
     - name: Wait 5 minutes before start configuration
       pause: minutes=5
-
+    - debug: var=nsxmanagers['nsx-manager'].ip
     - name: NSX-T Compute Manager
       nsxt_compute_manager:
         display_name: "{{ compute_manager }}"
@@ -42,10 +42,9 @@
         passwd: "{{ deployVcPassword }}"
         origin_type: "vCenter"
         state: present
-        nsx_manager: "{{ nsxmanagers.nsx-manager.ip }}"
+        nsx_manager: "{{ nsxmanagers['nsx-manager'].ip }}"
         nsx_username: 'admin'
-        nsx_passwd: "{{ nsxmanagers.nsx-manager.password }}"
-      when: compute_manager is defined
+        nsx_passwd: "{{ nsxmanagers['nsx-manager'].password }}"
       register: cmp_manager
 
 
@@ -55,21 +54,21 @@
         vc_id: "{{ cmp_manager.id }}"
         controllers: "{{ controllers }}"
         state: present
-        nsx_manager: "{{ nsxmanagers.nsx-manager.ip }}"
+        nsx_manager: "{{ nsxmanagers['nsx-manager'].ip }}"
         nsx_username: 'admin'
-        nsx_passwd: "{{ nsxmanagers.nsx-manager.password }}"
+        nsx_passwd: "{{ nsxmanagers['nsx-manager'].password }}"
       register: ctrl_cluster
 
     - name: NSX-T Transport Zone
       nsxt_transport_zone:
-        display_name: "{{ item }}"
+        display_name: "{{ item.key }}"
         description: "{{ item.value.description }}"
         host_switch_name: "{{ item.value.host_switch }}"
         transport_type: "{{ item. value.type }}"
         state: present
-        nsx_manager: "{{ nsxmanagers.nsx-manager.ip }}"
+        nsx_manager: "{{ nsxmanagers['nsx-manager'].ip }}"
         nsx_username: 'admin'
-        nsx_passwd: "{{ nsxmanagers.nsx-manager.password }}"
+        nsx_passwd: "{{ nsxmanagers['nsx-manager'].password }}"
       with_dict: "{{ transport_zones }}"
       register: tzone
 
@@ -88,22 +87,22 @@
         tags:
           "{{ tag_scope }}": "{{ tag }}"
         state: present
-        nsx_manager: "{{ nsxmanagers.nsx-manager.ip }}"
+        nsx_manager: "{{ nsxmanagers['nsx-manager'].ip }}"
         nsx_username: 'admin'
-        nsx_passwd: "{{ nsxmanagers.nsx-manager.password }}"
+        nsx_passwd: "{{ nsxmanagers['nsx-manager'].password }}"
       register: ippool
 
     - name: NSX-T IP Block
       nsxt_ip_block:
-        display_name: "{{ item }}"
+        display_name: "{{ item.key }}"
         description: "{{ item.value.description }}"
         cidr: "{{ item.value.cidr }}"
         tags:
           "{{ tag_scope }}": "{{ tag }}"
         state: present
-        nsx_manager: "{{ nsxmanagers.nsx-manager.ip }}"
+        nsx_manager: "{{ nsxmanagers['nsx-manager'].ip }}"
         nsx_username: 'admin'
-        nsx_passwd: "{{ nsxmanagers.nsx-manager.password }}"
+        nsx_passwd: "{{ nsxmanagers['nsx-manager'].password }}"
       with_dict: "{{ ipblocks }}"
       register: ipblock
 
@@ -120,9 +119,9 @@
         policy: "FAILOVER_ORDER"
         transport_vlan: "{{ edge_uplink_profile_vlan }}"
         state: present
-        nsx_manager: "{{ nsxmanagers.nsx-manager.ip }}"
+        nsx_manager: "{{ nsxmanagers['nsx-manager'].ip }}"
         nsx_username: 'admin'
-        nsx_passwd: "{{ nsxmanagers.nsx-manager.password }}"
+        nsx_passwd: "{{ nsxmanagers['nsx-manager'].password }}"
       when: edge_uplink_profile_name is defined
       register: edge_uplink_prof
 
@@ -137,16 +136,16 @@
         policy: "LOADBALANCE_SRCID"
         transport_vlan: "{{ esxi_uplink_profile_vlan }}"
         state: present
-        nsx_manager: "{{ nsxmanagers.nsx-manager.ip }}"
+        nsx_manager: "{{ nsxmanagers['nsx-manager'].ip }}"
         nsx_username: 'admin'
-        nsx_passwd: "{{ nsxmanagers.nsx-manager.password }}"
+        nsx_passwd: "{{ nsxmanagers['nsx-manager'].password }}"
       when: esxi_uplink_profile_name is defined
       register: edge_uplink_prof
 
 
     - name: NSX-T Compute Manager Cluster
       nsxt_cm_cluster:
-        display_name: "{{ item }}"
+        display_name: "{{ item.key }}"
         cm_name: "{{ compute_manager }}"
         auto_install_nsx: "{{ item.value.auto_install_nsx }}"
         create_transport_node: "{{ item.value.auto_create_transport_nodes }}"
@@ -157,16 +156,16 @@
             pnics: "{{ pnics }}"
             uplink_profile: "{{ esxi_uplink_profile_name }}"
         state: present
-        nsx_manager: "{{ nsxmanagers.nsx-manager.ip }}"
+        nsx_manager: "{{ nsxmanagers['nsx-manager'].ip }}"
         nsx_username: 'admin'
-        nsx_passwd: "{{ nsxmanagers.nsx-manager.password }}"
+        nsx_passwd: "{{ nsxmanagers['nsx-manager'].password }}"
       with_dict: "{{ cm_clusters }}"
       register: cmcluster
 
 
     - name: NSX-T Edge Node
       nsxt_edge_node:
-        display_name: "{{ item }}"
+        display_name: "{{ item.key }}"
         description: 'Edge Node created by Ansible'
         form_factor: "{{ item.value.form_factor }}"
         vsphere_cluster: "{{ item.value.cluster }}"
@@ -185,9 +184,9 @@
         cli_password: "{{ item.value.cli_password }}"
         root_password: "{{ item.value.root_password }}"
         state: present
-        nsx_manager: "{{ nsxmanagers.nsx-manager.ip }}"
+        nsx_manager: "{{ nsxmanagers['nsx-manager'].ip }}"
         nsx_username: 'admin'
-        nsx_passwd: "{{ nsxmanagers.nsx-manager.password }}"
+        nsx_passwd: "{{ nsxmanagers['nsx-manager'].password }}"
       with_dict: "{{ nsxedges }}"
       async: 7200
       poll: 0
@@ -203,8 +202,8 @@
 
     - name: NSX-T Edge Transport Node
       nsxt_transport_node:
-        display_name: "{{ item }}"
-        node_name: "{{ item }}"
+        display_name: "{{ item.key }}"
+        node_name: "{{ item.key }}"
         transport_zone_endpoints: 
           - "overlay_tz"
           - "edge_uplink_vlan_tz"
@@ -219,9 +218,9 @@
               uplink-1: "{{ item.value.uplink_interface }}"
             uplink_profile: "{{ edge_uplink_profile_name }}"
         state: present
-        nsx_manager: "{{ nsxmanagers.nsx-manager.ip }}"
+        nsx_manager: "{{ nsxmanagers['nsx-manager'].ip }}"
         nsx_username: 'admin'
-        nsx_passwd: "{{ nsxmanagers.nsx-manager.password }}"
+        nsx_passwd: "{{ nsxmanagers['nsx-manager'].password }}"
       with_dict: "{{ nsxedges }}"
       register: edgetnode
 
@@ -235,9 +234,9 @@
         tags:
           "{{ tag_scope }}": "{{ tag }}"
         state: present
-        nsx_manager: "{{ nsxmanagers.nsx-manager.ip }}"
+        nsx_manager: "{{ nsxmanagers['nsx-manager'].ip }}"
         nsx_username: 'admin'
-        nsx_passwd: "{{ nsxmanagers.nsx-manager.password }}"
+        nsx_passwd: "{{ nsxmanagers['nsx-manager'].password }}"
       when: edge_cluster is defined
       register: edge_cluster
 
@@ -251,9 +250,9 @@
         tags:
           "{{ tag_scope }}": "{{ tag }}"
         state: present
-        nsx_manager: "{{ nsxmanagers.nsx-manager.ip }}"
+        nsx_manager: "{{ nsxmanagers['nsx-manager'].ip }}"
         nsx_username: 'admin'
-        nsx_passwd: "{{ nsxmanagers.nsx-manager.password }}"
+        nsx_passwd: "{{ nsxmanagers['nsx-manager'].password }}"
       when: t0_name is defined
       register: t0
 
@@ -264,9 +263,9 @@
         edge_cluster_id: "{{ edge_cluster.id }}"
         connected_t0_id: "{{ t0.id }}"
         state: present
-        nsx_manager: "{{ nsxmanagers.nsx-manager.ip }}"
+        nsx_manager: "{{ nsxmanagers['nsx-manager'].ip }}"
         nsx_username: 'admin'
-        nsx_passwd: "{{ nsxmanagers.nsx-manager.password }}"
+        nsx_passwd: "{{ nsxmanagers['nsx-manager'].password }}"
       when: t1_name is defined
       register: t1
 
@@ -277,9 +276,9 @@
         transport_zone_id: "{{ edge_vlan_tzone.id }}"
         vlan: "{{ t0_vlan_uplink }}"
         state: present
-        nsx_manager: "{{ nsxmanagers.nsx-manager.ip }}"
+        nsx_manager: "{{ nsxmanagers['nsx-manager'].ip }}"
         nsx_username: 'admin'
-        nsx_passwd: "{{ nsxmanagers.nsx-manager.password }}"
+        nsx_passwd: "{{ nsxmanagers['nsx-manager'].password }}"
       when: t0_vlan_uplink is defined
       register: uplink_ls
 
@@ -289,9 +288,9 @@
         description: "Logical Switch Port"
         logical_switch_id: "{{ uplink_ls.id }}"
         state: present
-        nsx_manager: "{{ nsxmanagers.nsx-manager.ip }}"
+        nsx_manager: "{{ nsxmanagers['nsx-manager'].ip }}"
         nsx_username: 'admin'
-        nsx_passwd: "{{ nsxmanagers.nsx-manager.password }}"
+        nsx_passwd: "{{ nsxmanagers['nsx-manager'].password }}"
       when: t0_vlan_uplink is defined
       register: uplink_lsp
 
@@ -305,9 +304,9 @@
         logical_switch_port_id: "{{ uplink_lsp.id }}"
         ip_address: "{{ t0_ip1 }}"
         state: present
-        nsx_manager: "{{ nsxmanagers.nsx-manager.ip }}"
+        nsx_manager: "{{ nsxmanagers['nsx-manager'].ip }}"
         nsx_username: 'admin'
-        nsx_passwd: "{{ nsxmanagers.nsx-manager.password }}"
+        nsx_passwd: "{{ nsxmanagers['nsx-manager'].password }}"
       when: t0_vlan_uplink is defined
       register: t0uplink1
 
@@ -317,9 +316,9 @@
         description: "Logical Switch Port"
         logical_switch_id: "{{ uplink_ls.id }}"
         state: present
-        nsx_manager: "{{ nsxmanagers.nsx-manager.ip }}"
+        nsx_manager: "{{ nsxmanagers['nsx-manager'].ip }}"
         nsx_username: 'admin'
-        nsx_passwd: "{{ nsxmanagers.nsx-manager.password }}"
+        nsx_passwd: "{{ nsxmanagers['nsx-manager'].password }}"
       when: t0_vlan_uplink is defined
       register: uplink_lsp2
 
@@ -333,9 +332,9 @@
         logical_switch_port_id: "{{ uplink_lsp2.id }}"
         ip_address: "{{ t0_ip2 }}"
         state: present
-        nsx_manager: "{{ nsxmanagers.nsx-manager.ip }}"
+        nsx_manager: "{{ nsxmanagers['nsx-manager'].ip }}"
         nsx_username: 'admin'
-        nsx_passwd: "{{ nsxmanagers.nsx-manager.password }}"
+        nsx_passwd: "{{ nsxmanagers['nsx-manager'].password }}"
       when: t0_vlan_uplink is defined
       register: t0uplink2
 
@@ -348,9 +347,9 @@
           - "{{ t0uplink1.id }}"
           - "{{ t0uplink2.id }}"
         state: present
-        nsx_manager: "{{ nsxmanagers.nsx-manager.ip }}"
+        nsx_manager: "{{ nsxmanagers['nsx-manager'].ip }}"
         nsx_username: 'admin'
-        nsx_passwd: "{{ nsxmanagers.nsx-manager.password }}"
+        nsx_passwd: "{{ nsxmanagers['nsx-manager'].password }}"
       when: t0_vlan_uplink is defined
       register: havip
 
@@ -363,9 +362,9 @@
         description: "Default Static Route"
         router_name: "{{ t0_name }}"
         state: present
-        nsx_manager: "{{ nsxmanagers.nsx-manager.ip }}"
+        nsx_manager: "{{ nsxmanagers['nsx-manager'].ip }}"
         nsx_username: 'admin'
-        nsx_passwd: "{{ nsxmanagers.nsx-manager.password }}"
+        nsx_passwd: "{{ nsxmanagers['nsx-manager'].password }}"
       register: stroute
 
     - name: NSX-T Logical Switch
@@ -374,9 +373,9 @@
         description: "Management Logical Switch"
         transport_zone_id: "{{ overlay_tzone.id }}"
         state: present
-        nsx_manager: "{{ nsxmanagers.nsx-manager.ip }}"
+        nsx_manager: "{{ nsxmanagers['nsx-manager'].ip }}"
         nsx_username: 'admin'
-        nsx_passwd: "{{ nsxmanagers.nsx-manager.password }}"
+        nsx_passwd: "{{ nsxmanagers['nsx-manager'].password }}"
       when: ls_name is defined
       register: lsswitch
 
@@ -386,9 +385,9 @@
         description: "Logical Switch Port"
         logical_switch_id: "{{ lsswitch.id }}"
         state: present
-        nsx_manager: "{{ nsxmanagers.nsx-manager.ip }}"
+        nsx_manager: "{{ nsxmanagers['nsx-manager'].ip }}"
         nsx_username: 'admin'
-        nsx_passwd: "{{ nsxmanagers.nsx-manager.password }}"
+        nsx_passwd: "{{ nsxmanagers['nsx-manager'].password }}"
       when: ls_name is defined
       register: lsp
 
@@ -402,8 +401,8 @@
            - ip_addresses: "{{ t1_ip }}"
              prefix_length: "{{ t1_mask }}"
         state: present
-        nsx_manager: "{{ nsxmanagers.nsx-manager.ip }}"
+        nsx_manager: "{{ nsxmanagers['nsx-manager'].ip }}"
         nsx_username: 'admin'
-        nsx_passwd: "{{ nsxmanagers.nsx-manager.password }}"
+        nsx_passwd: "{{ nsxmanagers['nsx-manager'].password }}"
       when: t1_ip is defined
       register: lrdp
