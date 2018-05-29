@@ -124,15 +124,15 @@ tag: "k8s-cluster1"
 
 transport_zones:
   overlay_tz:
-    descrition: "Overlay Transport Zone"
+    description: "Overlay Transport Zone"
     host_switch: nvds1
     type: OVERLAY
   vlan_tz:
-    descrition: "VLAN Transport Zone for hypervisors"
+    description: "VLAN Transport Zone for hypervisors"
     host_switch: nvds1
     type: VLAN
   edge_uplink_vlan_tz:
-    descrition: "VLAN Transport Zone for Edge uplinks"
+    description: "VLAN Transport Zone for Edge uplinks"
     host_switch: edge_uplink_nvds
     type: VLAN
 

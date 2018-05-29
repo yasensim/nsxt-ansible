@@ -31,8 +31,8 @@
         vcenter_passwd: "{{ deployVcPassword }}"
       with_dict: "{{ nsxmanagers }}"
       register: deploy_nsx_man
-    - name: Wait 5 minutes before start configuration
-      pause: minutes=5
+    - name: Wait 3 minutes before start configuration
+      pause: minutes=3
     - debug: var=nsxmanagers['nsx-manager'].ip
     - name: NSX-T Compute Manager
       nsxt_compute_manager:
@@ -149,11 +149,12 @@
         cm_name: "{{ compute_manager }}"
         auto_install_nsx: "{{ item.value.auto_install_nsx }}"
         create_transport_node: "{{ item.value.auto_create_transport_nodes }}"
-        transport_zone_endpoints: "{{ transport_zones }}"
+        transport_zone_endpoints:
+          - overlay_tz
         host_switch:
-          - name: "{{ hostvars['localhost'].hostswitch }}"
+          - name: "nvds1"
             static_ip_pool_id: "{{ ippool.id }}"
-            pnics: "{{ pnics }}"
+            pnics: "{{ item.value.pnics }}"
             uplink_profile: "{{ esxi_uplink_profile_name }}"
         state: present
         nsx_manager: "{{ nsxmanagers['nsx-manager'].ip }}"
@@ -273,7 +274,7 @@
       nsxt_logical_switch:
         display_name: "uplink-{{ t0_vlan_uplink }}"
         description: "T0 Uplink VLAN Logical Switch"
-        transport_zone_id: "{{ edge_vlan_tzone.id }}"
+        transport_zone_name: edge_uplink_vlan_tz
         vlan: "{{ t0_vlan_uplink }}"
         state: present
         nsx_manager: "{{ nsxmanagers['nsx-manager'].ip }}"
@@ -371,7 +372,7 @@
       nsxt_logical_switch:
         display_name: "{{ ls_name }}"
         description: "Management Logical Switch"
-        transport_zone_id: "{{ overlay_tzone.id }}"
+        transport_zone_name: overlay_tz
         state: present
         nsx_manager: "{{ nsxmanagers['nsx-manager'].ip }}"
         nsx_username: 'admin'
