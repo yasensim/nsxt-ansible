@@ -17,7 +17,8 @@ There might be changed in the master branch!
 I assume you already have ansible installed. Connecting VMs to NSX-T Logical Switches is supported from Ansible 2.6. Anyway, using the modules in this repo is also possible with eralier versions.
 https://github.com/ansible/ansible/pull/37979
 
-Download nsxt python sdk and vapi from here https://my.vmware.com/web/vmware/details?downloadGroup=NSX-T-210-SDK-PYTHON&productId=673
+Download nsxt python sdk and vapi from here https://my.vmware.com/web/vmware/details?downloadGroup=NSX-T-220-SDK-PYTHON&productId=673
+
 
 You should have the following files locally:
 ```
