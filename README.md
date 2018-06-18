@@ -1,5 +1,7 @@
-# nsxt-ansible
-Repository for NSX-T Ansible Modules
+# Project Name: vmware-nsxt-ansible Repo Name: nsxt-ansible
+Repository for vmware-nsxt-ansible
+VMware OSS Ticket 1136798 with Apache-2 License
+
 It is for Internal PoC and is not VMware suppoted!!!
 
 For usage with NSX-T 2.1 please clone the v2.1 branch.
