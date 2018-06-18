@@ -2,9 +2,9 @@
 Repository for vmware-nsxt-ansible
 VMware OSS Ticket 1136798 with Apache-2 License
 
-It is for Internal PoC and is not VMware suppoted!!!
+It is an unofficial code!!!
 
-For usage with NSX-T 2.1 please clone the v2.1 branch.
+For usage with NSX-T 2.1 please clone and follow readme in the v2.1 branch.
 ```
 git clone -b v2.1 https://github.com/yasensim/nsxt-ansible.git
 ```
@@ -21,10 +21,10 @@ Download nsxt python sdk and vapi from here https://my.vmware.com/web/vmware/det
 
 You should have the following files locally:
 ```
-nsx_python_sdk-2.1.0.0.0.7319425-py2.py3-none-any.whl
-vapi_common-2.7.0-py2.py3-none-any.whl
-vapi_common_client-2.7.0-py2.py3-none-any.whl
-vapi_runtime-2.7.0-py2.py3-none-any.whl
+nsx_python_sdk-2.2.0.0.0.8360417-py2.py3-none-any.whl
+vapi_common-2.9.0-py2.py3-none-any.whl
+vapi_common_client-2.9.0-py2.py3-none-any.whl
+vapi_runtime-2.9.0-py2.py3-none-any.whl
 ```
 
 Install the dependancies and the required packages.
@@ -37,12 +37,12 @@ pip install --upgrade pip wheel setuptools
 pip install --upgrade lxml enum cffi
 pip install --upgrade cryptography pyopenssl enum34
 
-pip install nsx_python_sdk-2.1.0.0.0.7319425-py2.py3-none-any.whl
-pip install vapi_runtime-2.7.0-py2.py3-none-any.whl 
-pip install vapi_common-2.7.0-py2.py3-none-any.whl
-pip install vapi_common_client-2.7.0-py2.py3-none-any.whl
+pip install nsx_python_sdk-2.2.0.0.0.8360417-py2.py3-none-any.whl
+pip install vapi_common-2.9.0-py2.py3-none-any.whl
+pip install vapi_common_client-2.9.0-py2.py3-none-any.whl
+pip install vapi_runtime-2.9.0-py2.py3-none-any.whl
 ```
 
 ```
-git clone -b v2.1 https://github.com/yasensim/nsxt-ansible.git
+git clone https://github.com/yasensim/nsxt-ansible.git
 ```
