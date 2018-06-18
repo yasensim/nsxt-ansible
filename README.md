@@ -2,6 +2,8 @@
 Repository for vmware-nsxt-ansible
 VMware OSS Ticket 1136798 with Apache-2 License
 
+PROJECT HAS DECOMMISSION DATE IN WINTER 2018
+
 It is an unofficial code!!!
 
 For usage with NSX-T 2.1 please clone and follow readme in the v2.1 branch.
